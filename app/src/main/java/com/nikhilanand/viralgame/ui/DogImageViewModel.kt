@@ -1,6 +1,7 @@
 package com.nikhilanand.viralgame.ui
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -10,6 +11,7 @@ import com.nikhilanand.viralgame.model.DogImage
 import com.nikhilanand.viralgame.repository.DogImageRepository
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import retrofit2.http.Tag
 import java.io.IOException
 
 class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepository):
@@ -18,7 +20,7 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
     val dogImages:MutableLiveData<List<DogImage>> = MutableLiveData()
 
 
-
+    val TAG =" DogImageViewModel"
     val currentDogImages = dogImages.value ?: emptyList()
 
     val dogImagesLiveData: MutableLiveData<Resource<List<DogImage>>> = MutableLiveData()
@@ -40,7 +42,7 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
     var dogApiResponse:DogApiResponse? = null
 
 
-    fun getBreakingNews(countryCode: String) = viewModelScope.launch {
+    fun getDogImage() = viewModelScope.launch {
         safeDogImage()
     }
 
@@ -64,12 +66,15 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
 
 
                 val response = dogImageRepository.getDogImage()
-                dogImage.postValue(handleDogImageResponse(response))
+            Log.d(TAG,response.message())
+
+            dogImage.postValue(handleDogImageResponse(response))
 
         }catch (t:Throwable)
         {
             when(t)
             {
+
                 is IOException ->dogImage.postValue(Resource.Error("Network Failure"))
                 else->{
 
@@ -87,7 +92,7 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
 
                     dogApiResponse = resultResponse
 
-
+       Log.d(TAG, dogApiResponse.toString())
 //                    val newDogImages = currentDogImages.toMutableList()
 //                    newDogImages.add(DogImage(resultResponse.message))
 //                    dogImages.postValue(newDogImages.toList())

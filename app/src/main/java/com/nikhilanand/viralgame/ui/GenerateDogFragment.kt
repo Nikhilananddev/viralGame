@@ -8,7 +8,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.nikhilanand.utils.Resource
+import com.nikhilanand.viralgame.MainActivity
 import com.nikhilanand.viralgame.R
 import com.nikhilanand.viralgame.adapter.DogImageAdapter
 import com.nikhilanand.viralgame.databinding.FragmentGenerateDogBinding
@@ -39,8 +42,12 @@ class GenerateDogFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = (activity as MainActivity).viewModel
 
-        setupRecyclerView()
+//        setupRecyclerView()
+         binding.generateButton.setOnClickListener {
+             viewModel.getDogImage()
+         }
 
         viewModel.dogImage.observe(viewLifecycleOwner, Observer { response ->
             when(response) {
@@ -51,8 +58,15 @@ class GenerateDogFragment : Fragment() {
                     response.data?.let { dogImageResponse ->
 
 
+                        val options = RequestOptions()
+                            .centerCrop()
+                            .placeholder(R.drawable.place_holder_image)
+                            .error(R.drawable.place_holder_image)
 
-//                        dogImageAdapter.differ.submitList(dogImageResponse.message)
+                        Glide.with(binding.root.context)
+                            .load(dogImageResponse.message)
+                            .apply(options)
+                            .into(binding.generateDogImageView)//                        dogImageAdapter.differ.submitList(dogImageResponse.message)
 //                        val totalPage=newsResponse.totalResults
 //                        isLastPage=viewModel.breakingNewsPage==totalPage
 //                        if(isLastPage)
@@ -78,11 +92,11 @@ class GenerateDogFragment : Fragment() {
 
 
 
-    private fun setupRecyclerView() {
-        dogImageAdapter = DogImageAdapter()
-        binding.generateDogRecyclerView.apply {
-            adapter = dogImageAdapter
-            layoutManager =  LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        }
-    }
+//    private fun setupRecyclerView() {
+//        dogImageAdapter = DogImageAdapter()
+//        binding.generateDogRecyclerView.apply {
+//            adapter = dogImageAdapter
+//            layoutManager =  LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+//        }
+//    }
 }
