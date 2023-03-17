@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navgraph"
+    app:startDestination="@id/homeFragment">
+
+
+    <fragment
+        android:id="@+id/generatedDogFragment"
+        android:name="com.nikhilanand.viralgame.ui.GeneratedDogFragment"
+        android:label="fragment_generated_dog"
+        tools:layout="@layout/fragment_generated_dog" >
+        <action
+            android:id="@+id/action_generatedDogFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/generateDogFragment"
+        android:name="com.nikhilanand.viralgame.ui.GenerateDogFragment"
+        android:label="fragment_generate_dog"
+        tools:layout="@layout/fragment_generate_dog" >
+        <action
+            android:id="@+id/action_generateDogFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_generateDogFragment_to_homeFragment2"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.nikhilanand.viralgame.ui.HomeFragment"
+        android:label="HomeFragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_generateDogFragment"
+            app:destination="@id/generateDogFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_generatedDogFragment"
+            app:destination="@id/generatedDogFragment" />
+    </fragment>
+</navigation>
