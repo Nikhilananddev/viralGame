@@ -16,6 +16,8 @@ import java.io.IOException
 
 class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepository):
     AndroidViewModel(app){
+
+
     val dogImage: MutableLiveData<Resource<DogApiResponse>> = MutableLiveData()
     val dogImages:MutableLiveData<List<DogImage>> = MutableLiveData()
 
@@ -24,6 +26,7 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
     val currentDogImages = dogImages.value ?: emptyList()
 
     val dogImagesLiveData: MutableLiveData<Resource<List<DogImage>>> = MutableLiveData()
+
 
 
 //    private val _dogImages = MutableLiveData<List<String>>()
@@ -54,7 +57,6 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
     suspend fun safeDogImage(){
         dogImage.postValue(Resource.Loading())
 
-
         try {
 
 //            if(hasInternetConnection()) {
@@ -63,6 +65,7 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
 //            } else{
 //                breakingNews.postValue(Resource.Error("NO Internet Connection"))
 //            }
+
 
 
                 val response = dogImageRepository.getDogImage()
@@ -92,10 +95,10 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
 
                     dogApiResponse = resultResponse
 
-       Log.d(TAG, dogApiResponse.toString())
-//                    val newDogImages = currentDogImages.toMutableList()
-//                    newDogImages.add(DogImage(resultResponse.message))
-//                    dogImages.postValue(newDogImages.toList())
+
+                     Log.d(TAG, dogApiResponse.toString())
+                     addUrlToList(resultResponse)
+
 
                 } else {
 
@@ -103,14 +106,18 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
 //                    val oldImage = dogApiResponse?.message
 //                    val newImage = resultResponse.message
 
-//                    val newDogImages = currentDogImages.toMutableList()
-//                    newDogImages.add(DogImage(resultResponse.message))
-//                    dogImages.postValue(newDogImages.toList())
+                    addUrlToList(resultResponse)
 //                    oldImage?.all(newImage)
                 }
                 return Resource.Success(dogApiResponse ?: resultResponse)
             }
         }
         return Resource.Error(response.message())
+    }
+
+    private fun addUrlToList(resultResponse: DogApiResponse) {
+        val dogImageList = dogImagesLiveData.value?.data?.toMutableList() ?: mutableListOf()
+        dogImageList.add(DogImage(resultResponse.message))
+        dogImagesLiveData.postValue(Resource.Success(dogImageList))
     }
 }
