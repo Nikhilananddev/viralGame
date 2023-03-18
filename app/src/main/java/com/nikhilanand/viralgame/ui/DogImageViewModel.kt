@@ -9,6 +9,7 @@ import com.nikhilanand.utils.Resource
 import com.nikhilanand.viralgame.model.DogApiResponse
 import com.nikhilanand.viralgame.model.DogImage
 import com.nikhilanand.viralgame.repository.DogImageRepository
+import com.nikhilanand.viralgame.util.MaxSizeList
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import retrofit2.http.Tag
@@ -29,18 +30,6 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
 
 
 
-//    private val _dogImages = MutableLiveData<List<String>>()
-//    val dogImages: LiveData<List<String>> = _dogImages
-//
-//    fun fetchRandomDogImage() {
-//        viewModelScope.launch {
-//            val response = repository.getRandomDogImage()
-//            val currentDogImages = _dogImages.value ?: emptyList()
-//            val newDogImages = currentDogImages.toMutableList()
-//            newDogImages.add(response.message)
-//            _dogImages.value = newDogImages.toList()
-//        }
-//    }
 
     var dogApiResponse:DogApiResponse? = null
 
@@ -116,8 +105,16 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
     }
 
     private fun addUrlToList(resultResponse: DogApiResponse) {
+
         val dogImageList = dogImagesLiveData.value?.data?.toMutableList() ?: mutableListOf()
+
+        if (dogImageList.size>=2)
+        {
+            dogImageList.removeAt(0)
+        }
+
         dogImageList.add(DogImage(resultResponse.message))
         dogImagesLiveData.postValue(Resource.Success(dogImageList))
+
     }
 }
