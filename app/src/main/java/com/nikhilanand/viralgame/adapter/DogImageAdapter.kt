@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.nikhilanand.viralgame.R
 import com.nikhilanand.viralgame.databinding.ItemImagePreviewBinding
@@ -27,6 +28,7 @@ class DogImageAdapter() : RecyclerView.Adapter<DogImageAdapter.DogImageViewHolde
                 Glide.with(binding.root.context)
                     .load(itemData.imageUrl)
                     .apply(options)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(binding.itemImage)
 
             }

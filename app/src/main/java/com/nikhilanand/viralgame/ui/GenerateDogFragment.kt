@@ -23,6 +23,8 @@ class GenerateDogFragment : Fragment() {
     lateinit var dogImageAdapter: DogImageAdapter
     lateinit var binding: FragmentGenerateDogBinding
     lateinit var viewModel: DogImageViewModel
+       var isLoading=false
+
 
 
 
@@ -34,7 +36,6 @@ class GenerateDogFragment : Fragment() {
        binding= FragmentGenerateDogBinding.inflate(inflater,container,false)
 
         return binding.root
-//        return inflater.inflate(R.layout.fragment_generate_dog, container, false)
 
     }
 
@@ -50,111 +51,17 @@ class GenerateDogFragment : Fragment() {
          }
 
 
-//        viewModel.dogImagesLiveData.observe(viewLifecycleOwner) { resource ->
-//            when (resource) {
-//                is Resource.Success -> {
-//                    // Update the RecyclerView with the data
-//                    dogImageAdapter.submitList(resource.data)
-//                }
-//                is Resource.Error -> {
-//                    // Show an error message
-//                    Toast.makeText(requireContext(), resource.message, Toast.LENGTH_SHORT).show()
-//                }
-//                is Resource.Loading -> {
-//                    // Show a loading spinner
-//                    progressBar.visibility = View.VISIBLE
-//                }
-//            }
-//        }
 
-
-//        viewModel.dogImage.observe(viewLifecycleOwner, Observer { response ->
-//            when(response) {
-//                is Resource.Success -> {
-////                    hideProgressBar()
-//
-//
-//                    response.data?.let { dogImageResponse ->
-//
-//
-////                        val options = RequestOptions()
-////                            .centerCrop()
-////                            .placeholder(R.drawable.place_holder_image)
-////                            .error(R.drawable.place_holder_image)
-////
-////                        Glide.with(binding.root.context)
-////                            .load(dogImageResponse.message)
-////                            .apply(options)
-////                            .into(binding.generateDogImageView)//                        dogImageAdapter.differ.submitList(dogImageResponse.message)
-////                        val totalPage=newsResponse.totalResults
-////                        isLastPage=viewModel.breakingNewsPage==totalPage
-////                        if(isLastPage)
-////                        {
-////                            rvBreakingNews.setPadding(0,0,0,0)
-////                        }
-//                    }
-//                }
-//                is Resource.Error -> {
-////                    hideProgressBar()
-//                    response.message?.let { message ->
-//                        Toast.makeText(activity, "An error occured: $message", Toast.LENGTH_LONG).show()
-//                    }
-//                }
-//                is Resource.Loading -> {
-////                    showProgressBar()
-//                }
-//            }
-//        })
-
-
-
-
-//                viewModel.dogImages.observe(viewLifecycleOwner, Observer { response ->
-//            when(response) {
-//                is Resource.Success<*> -> {
-////                    hideProgressBar()
-//
-//
-//                    response.data?.let { dogImageResponse ->
-//
-//
-////                        val options = RequestOptions()
-////                            .centerCrop()
-////                            .placeholder(R.drawable.place_holder_image)
-////                            .error(R.drawable.place_holder_image)
-////
-////                        Glide.with(binding.root.context)
-////                            .load(dogImageResponse.message)
-////                            .apply(options)
-////                            .into(binding.generateDogImageView)//
-//                                                dogImageAdapter.differ.submitList(dogImageResponse.)
-////                        val totalPage=newsResponse.totalResults
-////                        isLastPage=viewModel.breakingNewsPage==totalPage
-////                        if(isLastPage)
-////                        {
-////                            rvBreakingNews.setPadding(0,0,0,0)
-////                        }
-//                    }
-//                }
-//                is Resource.Error<*> -> {
-////                    hideProgressBar()
-//                    response.message?.let { message ->
-//                        Toast.makeText(activity, "An error occured: $message", Toast.LENGTH_LONG).show()
-//                    }
-//                }
-//                is Resource.Loading<*> -> {
-////                    showProgressBar()
-//                }
-//            }
-//        })
 
         viewModel.dogImagesLiveData.observe(viewLifecycleOwner) { resource ->
             when (resource) {
                 is Resource.Success -> {
+                    hideProgressBar()
                     // Update the RecyclerView with the data
                     dogImageAdapter.differ.submitList(resource.data)
                 }
                 is Resource.Error -> {
+                    hideProgressBar()
                     // Show an error message
                     Toast.makeText(requireContext(), resource.message, Toast.LENGTH_SHORT).show()
                 }
@@ -162,6 +69,7 @@ class GenerateDogFragment : Fragment() {
                     // Show a loading spinner
                     Toast.makeText(requireContext(), "Loading", Toast.LENGTH_SHORT).show()
 //                    progressBar.visibility = View.VISIBLE
+                    showProgressBar()
                 }
             }
         }
@@ -178,5 +86,15 @@ class GenerateDogFragment : Fragment() {
             adapter = dogImageAdapter
             layoutManager =  LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         }
+    }
+
+    private fun hideProgressBar() {
+        binding.paginationProgressBar.visibility = View.INVISIBLE
+        isLoading=false
+    }
+
+    private fun showProgressBar() {
+        binding.paginationProgressBar.visibility = View.VISIBLE
+        isLoading=true
     }
 }

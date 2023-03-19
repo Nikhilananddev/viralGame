@@ -22,6 +22,8 @@ class GeneratedDogFragment : Fragment() {
     lateinit var dogImageAdapter: DogImageAdapter
     lateinit var binding: FragmentGeneratedDogBinding
     lateinit var viewModel: DogImageViewModel
+    var isLoading=false
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,7 +33,6 @@ class GeneratedDogFragment : Fragment() {
         binding= FragmentGeneratedDogBinding.inflate(inflater,container,false)
 
         return binding.root
-//        return inflater.inflate(R.layout.fragment_generated_dog, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,45 +44,40 @@ class GeneratedDogFragment : Fragment() {
         viewModel.getDogAllImage()
 
 
-        viewModel.dogImages.observe(viewLifecycleOwner) { resource ->
 
 
-//            if (resource!=null)
-//            {
-//                dogImageAdapter.differ.submitList(resource)
-//            }
-            dogImageAdapter.differ.submitList(resource)
+        binding.clear.setOnClickListener {
+            viewModel.clearAllDogImage()
         }
-//
-//        val list = CacheManager.getAllDogImage().toMutableList()
+        viewModel.dogImages.observe(viewLifecycleOwner) { resource ->
+            showProgressBar()
+
+
+            if (resource!=null)
+            {
+                hideProgressBar()
+
+                dogImageAdapter.differ.submitList(resource)
+            }
+        }
 
 
 
-//        dogImageAdapter.differ.submitList(dogImageList)
 
-        val a=2
 
-//        viewModel.dogImagesLiveData.observe(viewLifecycleOwner) { resource ->
-//            when (resource) {
-//                is Resource.Success -> {
-//                    // Update the RecyclerView with the data
-//                    dogImageAdapter.differ.submitList(resource.data)
-//                }
-//                is Resource.Error -> {
-//                    // Show an error message
-//                    Toast.makeText(requireContext(), resource.message, Toast.LENGTH_SHORT).show()
-//                }
-//                is Resource.Loading -> {
-//                    // Show a loading spinner
-//                    Toast.makeText(requireContext(), "Loading", Toast.LENGTH_SHORT).show()
-////                    progressBar.visibility = View.VISIBLE
-//                }
-//            }
-//        }
 
     }
 
 
+    private fun hideProgressBar() {
+        binding.paginationProgressBar.visibility = View.INVISIBLE
+        isLoading=false
+    }
+
+    private fun showProgressBar() {
+        binding.paginationProgressBar.visibility = View.VISIBLE
+        isLoading=true
+    }
     private fun setupRecyclerView() {
         dogImageAdapter = DogImageAdapter()
         binding.generatedDogRecyclerView.apply {

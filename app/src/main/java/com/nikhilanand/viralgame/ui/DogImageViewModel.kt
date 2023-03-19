@@ -45,14 +45,34 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
 
 
 
-    fun getDogAllImage() = viewModelScope.launch {
-        safeAllDogImage()
+    fun clearAllDogImage() = viewModelScope.launch {
+
+        try {
+            dogImageRepository.clearCache(app.applicationContext)
+            dogImages.postValue(CacheManager.getAllDogImage())
+        }catch (t:Throwable)
+        {
+            when(t) {
+
+                is IOException -> t.printStackTrace()
+                else -> {
+
+                    println("read write error")
+                }
+            }
+        }
+
     }
 
-   suspend fun safeAllDogImage() {
+
+    fun getDogAllImage() = viewModelScope.launch {
+        saveAllDogImage()
+    }
+
+        suspend fun saveAllDogImage() {
 
       dogImages.postValue(CacheManager.getAllDogImage())
-    }
+       }
 
 
 
@@ -64,18 +84,16 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
 
         try {
 
-//            if(hasInternetConnection()) {
-//                val response = newsRepository.getBreakingNews(countryCode, breakingNewsPage)
-//                breakingNews.postValue(handleBreakingNewsResponse(response))
-//            } else{
-//                breakingNews.postValue(Resource.Error("NO Internet Connection"))
-//            }
-
-
-
+            if(hasInternetConnection()) {
                 val response = dogImageRepository.getDogImage()
+                dogImage.postValue(handleDogImageResponse(response))
+            } else{
+                dogImage.postValue(Resource.Error("NO Internet Connection"))
+            }
 
-            dogImage.postValue(handleDogImageResponse(response))
+
+
+
 
         }catch (t:Throwable)
         {
@@ -99,23 +117,20 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
                     dogApiResponse = resultResponse
 
 
-                     Log.d(TAG, dogApiResponse.toString())
                      addUrlToList(resultResponse)
 
-                    addDogImageToCache(resultResponse.message, DogImage(resultResponse.message))
+                    dogImageRepository.addDogImageToCache(resultResponse.message, DogImage(resultResponse.message),app.applicationContext)
 
 
                 } else {
 
                     dogApiResponse=resultResponse
-//                    val oldImage = dogApiResponse?.message
-//                    val newImage = resultResponse.message
+
 
                     addUrlToList(resultResponse)
 
-                    addDogImageToCache(resultResponse.message, DogImage(resultResponse.message))
+                    dogImageRepository.addDogImageToCache(resultResponse.message, DogImage(resultResponse.message),app.applicationContext)
 
-//                    oldImage?.all(newImage)
                 }
                 return Resource.Success(dogApiResponse ?: resultResponse)
             }
@@ -123,14 +138,16 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
         return Resource.Error(response.message())
     }
 
+
+
     private fun addUrlToList(resultResponse: DogApiResponse) {
 
         val dogImageList = dogImagesLiveData.value?.data?.toMutableList() ?: mutableListOf()
-//
-//        if (dogImageList.size>=2)
-//        {
-//            dogImageList.removeAt(0)
-//        }
+
+        if (dogImageList.size>=20)
+        {
+            dogImageList.removeAt(0)
+        }
 
 
         dogImageList.add(DogImage(resultResponse.message))
@@ -138,10 +155,7 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
 
     }
 
-    private fun addDogImageToCache(key: String, dogImage: DogImage) {
-        CacheManager.put(key,dogImage)
 
-    }
 
     fun hasInternetConnection(): Boolean {
         val connectivityManager = getApplication<DogApplication>().getSystemService(
