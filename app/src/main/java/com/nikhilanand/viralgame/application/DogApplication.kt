@@ -5,7 +5,24 @@ import android.content.Context
 
 class DogApplication:Application() {
 
-    fun getAppContext(): Context? {
-        return applicationContext
+    init {
+        instance = this
+    }
+
+    companion object {
+        private var instance: DogApplication? = null
+
+        fun applicationContext() : Context {
+            return instance!!.applicationContext
+        }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        // initialize for any
+
+        // Use ApplicationContext.
+        // example: SharedPreferences etc...
+        val context: Context = DogApplication.applicationContext()
     }
 }
