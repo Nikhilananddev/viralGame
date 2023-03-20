@@ -4,5 +4,6 @@
      <padding android:left="1px" android:right="1px" android:top="1px" android:bottom="1px"/>
     <corners android:radius="25dp" />
     <size android:height="2px" android:width="4dp"/>
-    <solid android:color="@color/button_color"/>
+    <solid android:color="@color/button_color" />
+
 </shape>

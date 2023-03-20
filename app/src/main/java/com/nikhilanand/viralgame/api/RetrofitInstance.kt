@@ -10,7 +10,7 @@ class RetrofitInstance {
 
     companion object {
         val retrofit by lazy {
-          val logging =HttpLoggingInterceptor()
+            val logging = HttpLoggingInterceptor()
             logging.setLevel(HttpLoggingInterceptor.Level.BODY)
 
             val client = OkHttpClient().newBuilder()
