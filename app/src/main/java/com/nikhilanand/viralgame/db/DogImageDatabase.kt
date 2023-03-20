@@ -4,17 +4,17 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import com.nikhilanand.viralgame.model.DogImageCache
+import com.nikhilanand.viralgame.db.DogImageDao
+import com.nikhilanand.viralgame.model.DogImage
 
 
 @Database(
-    entities = [DogImageCache::class],
+    entities = [DogImage::class],
     version = 1
 )
 abstract class DogImageDatabase : RoomDatabase() {
 
-    abstract fun getDogImageDao():DogImageDao
+    abstract fun getDogImageDao(): DogImageDao
 
     companion object {
         @Volatile

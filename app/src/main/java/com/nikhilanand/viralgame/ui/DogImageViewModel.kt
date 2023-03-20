@@ -6,9 +6,8 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.nikhilanand.newsapp.db.DogImageDatabase
 import com.nikhilanand.utils.Resource
 import com.nikhilanand.viralgame.application.DogApplication
 import com.nikhilanand.viralgame.model.DogApiResponse
@@ -64,15 +63,56 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
 
     }
 
+    fun clearAllDogImageDB() = viewModelScope.launch {
 
-    fun getDogAllImage() = viewModelScope.launch {
-        saveAllDogImage()
+        try {
+            dogImageRepository.deleteDogImage()
+            dogImages.postValue(getSavedDogImage().value)
+        }catch (t:Throwable)
+        {
+            when(t) {
+
+                is IOException -> t.printStackTrace()
+                else -> {
+
+                    println("read write error")
+                }
+            }
+        }
+
     }
 
-        suspend fun saveAllDogImage() {
 
-      dogImages.postValue(CacheManager.getAllDogImage())
+//    fun getDogAllImage() = viewModelScope.launch {
+//        saveAllDogImage()
+//    }
+//
+        suspend fun saveAllDogImage() {
+       val dogImage =dogImageRepository.getAllDogImage()
+         dogImages.postValue(dogImage.value)
        }
+
+
+    fun getDogAllImageDB() = viewModelScope.launch {
+        saveAllDogImage()
+    }
+ fun getSavedDogImage(): MutableLiveData<List<DogImage>> {
+
+        val dogImage =dogImageRepository.getAllDogImage()
+     Log.d(TAG,dogImage.value.toString())
+
+     Log.d(TAG,dogImage.value.toString())
+        val a=2
+        return dogImages;
+    }
+
+    fun  saveDogImage(imageUrl: String)=viewModelScope.launch {
+
+        val dogImage = DogImage(imageUrl = imageUrl)
+
+        dogImageRepository.insertDogImage(dogImage)
+
+    }
 
 
 
@@ -119,8 +159,8 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
 
                      addUrlToList(resultResponse)
 
-                    dogImageRepository.addDogImageToCache(resultResponse.message, DogImage(resultResponse.message),app.applicationContext)
-
+//                    dogImageRepository.addDogImageToCache(resultResponse.message, DogImage(resultResponse.message),app.applicationContext)
+                      saveDogImage(resultResponse.message)
 
                 } else {
 
@@ -129,7 +169,9 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
 
                     addUrlToList(resultResponse)
 
-                    dogImageRepository.addDogImageToCache(resultResponse.message, DogImage(resultResponse.message),app.applicationContext)
+//                    dogImageRepository.addDogImageToCache(resultResponse.message, DogImage(resultResponse.message),app.applicationContext)
+                    saveDogImage(resultResponse.message)
+
 
                 }
                 return Resource.Success(dogApiResponse ?: resultResponse)
@@ -150,7 +192,7 @@ class DogImageViewModel(val app:Application,val dogImageRepository: DogImageRepo
         }
 
 
-        dogImageList.add(DogImage(resultResponse.message))
+        dogImageList.add(DogImage( imageUrl = resultResponse.message))
         dogImagesLiveData.postValue(Resource.Success(dogImageList))
 
     }

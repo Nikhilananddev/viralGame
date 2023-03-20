@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
+import com.nikhilanand.newsapp.db.DogImageDatabase
 import com.nikhilanand.viralgame.databinding.ActivityMainBinding
 import com.nikhilanand.viralgame.repository.DogImageRepository
 import com.nikhilanand.viralgame.ui.DogImageViewModel
@@ -20,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
 
         setContentView(view)
-        val dogImageRepository = DogImageRepository()
+        val dogImageRepository = DogImageRepository(DogImageDatabase(this))
         val viewModelProviderFactory = DogViewModelProviderFactory(application, dogImageRepository)
         viewModel = ViewModelProvider(this, viewModelProviderFactory).get(DogImageViewModel::class.java)
         val navHostFragment= supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment

@@ -1,20 +1,17 @@
 package com.nikhilanand.viralgame.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nikhilanand.utils.Resource
 import com.nikhilanand.viralgame.MainActivity
-import com.nikhilanand.viralgame.R
 import com.nikhilanand.viralgame.adapter.DogImageAdapter
-import com.nikhilanand.viralgame.databinding.FragmentGenerateDogBinding
 import com.nikhilanand.viralgame.databinding.FragmentGeneratedDogBinding
-import com.nikhilanand.viralgame.model.DogImage
-import com.nikhilanand.viralgame.util.CacheManager
+import kotlinx.coroutines.DelicateCoroutinesApi
 
 
 class GeneratedDogFragment : Fragment() {
@@ -35,22 +32,26 @@ class GeneratedDogFragment : Fragment() {
         return binding.root
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = (activity as MainActivity).viewModel
         setupRecyclerView()
 
 
-        viewModel.getDogAllImage()
+//        viewModel.getDogAllImage()
 
+        viewModel.getDogAllImageDB()
 
 
 
         binding.clear.setOnClickListener {
-            viewModel.clearAllDogImage()
+//            viewModel.clearAllDogImage()
+            viewModel.clearAllDogImageDB()
         }
         viewModel.dogImages.observe(viewLifecycleOwner) { resource ->
             showProgressBar()
+
 
 
             if (resource!=null)
@@ -62,7 +63,36 @@ class GeneratedDogFragment : Fragment() {
         }
 
 
+//        viewModel.getSavedDogImage().observe(viewLifecycleOwner) { resource ->
+//
+//
+//            val a=resource
+//
+//            dogImageAdapter.differ.submitList(resource)
+//
+//        }
+//        viewModel.getSavedDogImage().observe(viewLifecycleOwner,  Observer<List<DogImage>> {resource->
+//
+//
+//            dogImageAdapter.differ.submitList(resource)
+//        })
 
+        Log.d("DogImageFragment","A")
+
+//        viewModel.getSavedDogImage().observe(viewLifecycleOwner,  Observer {resource->
+//
+////                Log.d("DogImageFragment",resource.toString())
+//
+//            if (resource==null)
+//            {
+//                Toast.makeText(activity,"DATA is not fetch",Toast.LENGTH_SHORT).show()
+//            }
+//            else
+//            {
+//                Toast.makeText(activity,resource.toString(),Toast.LENGTH_SHORT).show()
+//            }
+//                dogImageAdapter.differ.submitList(resource)
+//            })
 
 
 
