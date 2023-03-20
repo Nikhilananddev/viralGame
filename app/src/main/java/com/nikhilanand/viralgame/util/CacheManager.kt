@@ -1,23 +1,18 @@
 package com.nikhilanand.viralgame.util
 
-import android.app.Activity
-import android.content.Context
-import android.util.Log
 import android.util.LruCache
+import com.nikhilanand.viralgame.application.DogApplication
 import com.nikhilanand.viralgame.model.DogImage
-import kotlinx.coroutines.GlobalScope.coroutineContext
 import java.io.*
 
 object CacheManager {
-    private val MAX_CACHE_SIZE = 20
-//    private val cache = LruCache<String, DogImage>(MAX_CACHE_SIZE)
+    private const val MAX_CACHE_SIZE = 20
     private val cache = readCache()
-    val a=2
 
 
-    fun put(key: String, value: DogImage,context: Context) {
+    fun put(key: String, value: DogImage) {
         cache.put(key, value)
-        saveCache(context)
+        saveCache()
 
     }
 
@@ -25,19 +20,19 @@ object CacheManager {
         return cache.get(key)
     }
 
-    fun remove(key: String,context: Context) {
+    fun remove(key: String) {
         cache.remove(key)
-        saveCache(context)
+        saveCache()
 
     }
 
-    fun clear(context: Context){
+    fun clear() {
         cache.evictAll()
-        saveCache(context)
+        saveCache()
 
     }
-    fun getAllDogImage():List<DogImage>
-    {
+
+    fun getAllDogImage(): List<DogImage> {
 
         var list = ArrayList<DogImage>()
         val entries = cache.snapshot().entries
@@ -46,32 +41,24 @@ object CacheManager {
             if (value != null) {
                 list.add(value)
             }
-            // Do something with the key-value pair
         }
 
 
         return list
     }
 
-//    private fun saveCache() {
-////        val file = File("cache.dat")
-////        val outputStream = ObjectOutputStream(FileOutputStream(file))
-////        outputStream.writeObject(cache)
-////        outputStream.close()
-//
-//    }
-fun saveCache(context: Context) {
-    try {
-        val file = File(context.cacheDir, "CACHE_FILE_NAME")
-        val fileOutputStream = FileOutputStream(file)
-        val objectOutputStream = ObjectOutputStream(fileOutputStream)
-        objectOutputStream.writeObject(cache.snapshot())
-        objectOutputStream.close()
-        fileOutputStream.close()
-    } catch (e: Exception) {
-//        Log.e(TAG, "Error saving cache", e)
+
+    fun saveCache() {
+        try {
+            val file = File(DogApplication.applicationContext().cacheDir, "CACHE_FILE_NAME")
+            val fileOutputStream = FileOutputStream(file)
+            val objectOutputStream = ObjectOutputStream(fileOutputStream)
+            objectOutputStream.writeObject(cache.snapshot())
+            objectOutputStream.close()
+            fileOutputStream.close()
+        } catch (e: Exception) {
+        }
     }
-}
 
 
     private fun readCache(): LruCache<String, DogImage> {

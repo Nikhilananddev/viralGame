@@ -7,15 +7,16 @@ import com.nikhilanand.viralgame.util.CacheManager
 
 class DogImageRepository {
 
-    suspend fun getDogImage()=
+    suspend fun getDogImage() =
         RetrofitInstance.api.getRandomDogImage()
 
-    fun addDogImageToCache(key: String, dogImage: DogImage,context: Context) {
-        CacheManager.put(key,dogImage,context)
+    fun addDogImageToCache(key: String, dogImage: DogImage) {
+        CacheManager.put(key, dogImage)
 
     }
-    fun clearCache(context: Context) {
-        CacheManager.clear(context)
+
+    fun clearCache() {
+        CacheManager.clear()
 
     }
 

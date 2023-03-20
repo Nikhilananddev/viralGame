@@ -12,7 +12,7 @@ import com.nikhilanand.viralgame.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 
- lateinit var binding: FragmentHomeBinding
+    lateinit var binding: FragmentHomeBinding
 
 
     override fun onCreateView(
@@ -29,7 +29,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         binding.generateDog.setOnClickListener {
-           findNavController().navigate(R.id.action_homeFragment_to_generateDogFragment)
+            findNavController().navigate(R.id.action_homeFragment_to_generateDogFragment)
 
         }
         binding.showRecentDog.setOnClickListener {

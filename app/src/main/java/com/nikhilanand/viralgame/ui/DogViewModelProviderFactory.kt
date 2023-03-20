@@ -7,12 +7,12 @@ import com.nikhilanand.viralgame.repository.DogImageRepository
 
 
 class DogViewModelProviderFactory(
-    val app:Application,
+    val app: Application,
     val dogImageRepository: DogImageRepository
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return DogImageViewModel(app,dogImageRepository) as T
+        return DogImageViewModel(app, dogImageRepository) as T
     }
 
 

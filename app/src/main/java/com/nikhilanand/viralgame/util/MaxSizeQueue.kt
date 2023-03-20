@@ -1,6 +1,6 @@
 package com.nikhilanand.viralgame.util
 
-import java.util.ArrayDeque
+import java.util.*
 
 class MaxSizeQueue<T>(private val maxSize: Int) : ArrayDeque<T>() {
     override fun add(t: T): Boolean {

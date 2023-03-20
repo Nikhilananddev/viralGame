@@ -1,10 +1,10 @@
 package com.nikhilanand.viralgame.adapter
 
 import android.view.LayoutInflater
-import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -16,53 +16,53 @@ class DogImageAdapter() : RecyclerView.Adapter<DogImageAdapter.DogImageViewHolde
 
     lateinit var binding: ItemImagePreviewBinding
 
-        inner   class DogImageViewHolder(private val binding: ItemImagePreviewBinding):RecyclerView.ViewHolder(binding.root)
+    inner class DogImageViewHolder(private val binding: ItemImagePreviewBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(itemData: DogImage) {
+            val options = RequestOptions()
+                .centerCrop()
+                .placeholder(R.drawable.place_holder_image)
+                .error(R.drawable.place_holder_image)
 
-        {
-            fun bind(itemData: DogImage){
-                val options = RequestOptions()
-                    .centerCrop()
-                    .placeholder(R.drawable.place_holder_image)
-                    .error(R.drawable.place_holder_image)
+            Glide.with(binding.root.context)
+                .load(itemData.imageUrl)
+                .apply(options)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(binding.itemImage)
 
-                Glide.with(binding.root.context)
-                    .load(itemData.imageUrl)
-                    .apply(options)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(binding.itemImage)
-
-            }
         }
+    }
 
-    private val differCallback=object:DiffUtil.ItemCallback<DogImage>(){
+    private val differCallback = object : DiffUtil.ItemCallback<DogImage>() {
         override fun areItemsTheSame(oldItem: DogImage, newItem: DogImage): Boolean {
 
-          return oldItem.imageUrl==newItem.imageUrl
+            return oldItem.imageUrl == newItem.imageUrl
         }
 
         override fun areContentsTheSame(oldItem: DogImage, newItem: DogImage): Boolean {
-            return oldItem==newItem
+            return oldItem == newItem
         }
 
     }
-    val differ=AsyncListDiffer(this,differCallback)
+    val differ = AsyncListDiffer(this, differCallback)
 
-     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DogImageViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DogImageViewHolder {
 
-       binding= ItemImagePreviewBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        binding =
+            ItemImagePreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-      return  DogImageViewHolder(binding)
-     }
+        return DogImageViewHolder(binding)
+    }
 
-     override fun onBindViewHolder(holder: DogImageViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DogImageViewHolder, position: Int) {
 
-         val itemData = differ.currentList[position]
-         holder.bind(itemData)
-     }
+        val itemData = differ.currentList[position]
+        holder.bind(itemData)
+    }
 
-     override fun getItemCount(): Int {
-      return  differ.currentList.size
+    override fun getItemCount(): Int {
+        return differ.currentList.size
 
-     }
+    }
 
- }
+}
